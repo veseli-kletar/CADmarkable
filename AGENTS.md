@@ -16,7 +16,7 @@ This application is a 3D Computer-Aided Design (CAD) tool, conceptually similar 
    - Keep the C++ backend lightweight, focusing on data models, 3D logic, and bridging system APIs.
    - Ensure proper memory management and avoid memory leaks, as resources are constrained.
 2. **QML (User Interface):**
-   - Design for an e-ink display: favor high contrast, monochrome/grayscale (or the specific color capabilities of the Paper Pro), and avoid continuous animations to prevent ghosting and reduce latency.
+   - Design for an e-ink display: favor high contrast, standard CAD E-ink colors/grayscale (or the specific color capabilities of the Paper Pro), and avoid continuous animations to prevent ghosting and reduce latency.
    - Group related UI components into reusable QML files.
    - Handle touch and stylus input gracefully.
 3. **CMake (Build System):**

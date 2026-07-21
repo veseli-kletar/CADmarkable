@@ -13,9 +13,9 @@ int main(int argc, char *argv[])
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
 #if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-    engine.loadFromModule("remarkable_cad_app", "Main");
+    engine.loadFromModule("CADmarkable_app", "Main");
 #else
-    engine.load(QUrl(QStringLiteral("qrc:/remarkable_cad_app/src/Main.qml")));
+    engine.load(QUrl(QStringLiteral("qrc:/CADmarkable_app/src/Main.qml")));
 #endif
     return app.exec();
 }
