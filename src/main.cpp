@@ -5,6 +5,10 @@
 
 int main(int argc, char *argv[])
 {
+    if (argc <= 0 || argv == nullptr) {
+        return 1;
+    }
+
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
