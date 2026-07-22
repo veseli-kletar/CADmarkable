@@ -72,4 +72,3 @@ add_custom_target(run_qml_tests
     COMMAND env QT_QPA_PLATFORM=offscreen ${QMLTESTRUNNER_EXECUTABLE} -import ${CMAKE_SOURCE_DIR}/tests/mock -input ${CMAKE_SOURCE_DIR}/tests/tst_Main.qml
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
-
