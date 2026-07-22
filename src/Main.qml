@@ -6,10 +6,10 @@ import QtQuick3D.Helpers
 import CADmarkable_app
 
 Window {
-    width: 1200
-    height: 800
+    width: Screen.width
+    height: Screen.height
     visible: true
-    title: "CADmarkable"
+    title: "reMarkable CAD"
     color: "#FFFFFF"
 
     CadController {

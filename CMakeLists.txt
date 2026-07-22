@@ -28,3 +28,20 @@ target_link_libraries(CADmarkable PRIVATE
     Qt6::Quick3D
     Qt6::QuickShapesPrivate
 )
+
+enable_testing()
+
+# Ensure qmltestrunner is found if Qt6::qmltestrunner isn't natively exposed.
+# Qt6 Test is standard but qmltestrunner might just be an executable.
+find_program(QMLTESTRUNNER_EXECUTABLE NAMES qmltestrunner PATHS /usr/lib/qt6/bin /usr/bin)
+
+add_test(NAME qml_tests
+    COMMAND env QT_QPA_PLATFORM=offscreen ${QMLTESTRUNNER_EXECUTABLE} -import ${CMAKE_SOURCE_DIR}/tests/mock -input ${CMAKE_SOURCE_DIR}/tests/tst_Main.qml
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+# Keep the custom target for convenience
+add_custom_target(run_qml_tests
+    COMMAND env QT_QPA_PLATFORM=offscreen ${QMLTESTRUNNER_EXECUTABLE} -import ${CMAKE_SOURCE_DIR}/tests/mock -input ${CMAKE_SOURCE_DIR}/tests/tst_Main.qml
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
