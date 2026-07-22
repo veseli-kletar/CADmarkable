@@ -9,7 +9,7 @@ Window {
     width: Screen.width
     height: Screen.height
     visible: true
-    title: "reMarkable CAD"
+    title: "CADmarkable"
     color: "#FFFFFF"
 
     CadController {

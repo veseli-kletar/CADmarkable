@@ -44,7 +44,7 @@ TestCase {
 
     function test_window_properties() {
         verify(mainWin !== null, "Main window should be created")
-        compare(mainWin.title, "reMarkable CAD", "Title should match")
+        compare(mainWin.title, "CADmarkable", "Title should match")
         compare(mainWin.width, Screen.width, "Width should be Screen.width")
         compare(mainWin.height, Screen.height, "Height should be Screen.height")
     }
