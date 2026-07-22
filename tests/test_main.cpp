@@ -1,6 +1,7 @@
 #include <QtTest>
 #include <QQmlApplicationEngine>
 #include <QCoreApplication>
+#include <QLibraryInfo>
 #include "CadController.h"
 #include <QQmlComponent>
 
@@ -11,17 +12,17 @@ class TestMain : public QObject
 private slots:
     void testMainAppLoading()
     {
-        // 1. Verify QML Type Registration
-        qmlRegisterType<CadController>("CADmarkable_app", 1, 0, "CadController");
-
         QQmlApplicationEngine engine;
-        engine.addImportPath("/usr/lib/x86_64-linux-gnu/qt6/qml");
+        engine.addImportPath(QLibraryInfo::path(QLibraryInfo::QmlImportsPath));
         engine.addImportPath("qrc:/");
 
         // 2. Verify Component Loading
         QQmlComponent component(&engine);
-        component.loadUrl(QUrl("qrc:/CADmarkable_app/src/Main.qml"));
+        component.loadFromModule("CADmarkable_app", "Main");
 
+        if (component.isError()) {
+            qDebug() << component.errorString();
+        }
         QVERIFY2(!component.isError(), "Component has errors while loading main QML file");
 
         // 3. Verify Object Instantiation

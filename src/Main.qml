@@ -3,6 +3,7 @@ import QtQuick.Window
 import QtQuick.Layouts
 import QtQuick3D
 import QtQuick3D.Helpers
+import QtQuick.Controls
 import CADmarkable_app
 
 Window {
@@ -14,6 +15,37 @@ Window {
 
     CadController {
         id: cadController
+    }
+
+    function updateStatusCoords(x, y) {
+        statusCoords.text = "X: " + Math.round(x) + "  Y: " + Math.round(y)
+    }
+
+    // Keyboard shortcuts for tool switching
+    Shortcut {
+        sequence: "S"
+        onActivated: cadController.activeTool = "Select"
+    }
+    Shortcut {
+        sequence: "R"
+        onActivated: cadController.activeTool = "Rectangle"
+    }
+    Shortcut {
+        sequence: "L"
+        onActivated: cadController.activeTool = "Line"
+    }
+    Shortcut {
+        sequence: "D"
+        onActivated: cadController.activeTool = "Dimension"
+    }
+    Shortcut {
+        sequence: "E"
+        onActivated: {
+            cadController.activeTool = "Extrude"
+            if (cadController.sketchRectWidth > 0 && cadController.sketchRectHeight > 0) {
+                cadController.extrusionDepth = 100
+            }
+        }
     }
 
     // Shared 3D Scene Node
@@ -188,6 +220,46 @@ Window {
                     viewName: "Right"
                     cadController: cadController
                     importScene: sharedScene
+                }
+            }
+        }
+
+        // Status Bar
+        Rectangle {
+            Layout.fillWidth: true
+            height: 24
+            color: "#F0F0F0"
+            border.color: "#CCCCCC"
+            border.width: 1
+
+            Row {
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 20
+
+                Text {
+                    text: "Tool: " + cadController.activeTool
+                    font.pixelSize: 12
+                    color: "#333333"
+                }
+                Text {
+                    id: statusCoords
+                    text: "X: 0  Y: 0"
+                    font.pixelSize: 12
+                    color: "#666666"
+                }
+                Text {
+                    visible: cadController.sketchRectWidth > 0 || cadController.sketchRectHeight > 0
+                    text: "Rect: " + Math.round(cadController.sketchRectWidth) + " × " + Math.round(cadController.sketchRectHeight)
+                    font.pixelSize: 12
+                    color: "#666666"
+                }
+                Text {
+                    visible: cadController.extrusionDepth > 0
+                    text: "Depth: " + Math.round(cadController.extrusionDepth)
+                    font.pixelSize: 12
+                    color: "#666666"
                 }
             }
         }

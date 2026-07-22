@@ -46,6 +46,44 @@ Item {
         anchors.margins: 8
     }
 
+    // Coordinate display
+    Text {
+        visible: viewName === "Top" && (cadController && (cadController.activeTool === "Rectangle" || cadController.activeTool === "Line"))
+        text: Math.round(cursorX) + ", " + Math.round(cursorY)
+        font.pixelSize: 11
+        color: "#0000FF"
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: 8
+    }
+
+    // Crosshair cursor for sketch mode
+    Item {
+        id: crosshair
+        visible: viewName === "Top" && cadController && (cadController.activeTool === "Rectangle" || cadController.activeTool === "Line")
+        x: cursorX - 10
+        y: cursorY - 10
+        width: 20
+        height: 20
+
+        Rectangle {
+            x: 9
+            y: 0
+            width: 2
+            height: 20
+            color: "#0000FF"
+            opacity: 0.5
+        }
+        Rectangle {
+            x: 0
+            y: 9
+            width: 20
+            height: 2
+            color: "#0000FF"
+            opacity: 0.5
+        }
+    }
+
     // Interactive 2D Overlay for sketching
     Item {
         anchors.fill: parent
@@ -84,9 +122,12 @@ Item {
     property real startX: 0
     property real startY: 0
     property bool isDrawing: false
+    property real cursorX: 0
+    property real cursorY: 0
 
     MouseArea {
         anchors.fill: parent
+        hoverEnabled: true
         onPressed: (mouse) => {
             if (!cadController || viewName !== "Top") return; // Only allow sketching on Top plane for MVP
             if (cadController.activeTool === "Rectangle") {
@@ -113,6 +154,11 @@ Item {
             }
         }
         onPositionChanged: (mouse) => {
+            cursorX = mouse.x;
+            cursorY = mouse.y;
+            if (root.Window.window && root.Window.window.updateStatusCoords) {
+                root.Window.window.updateStatusCoords(mouse.x, mouse.y);
+            }
             if (!cadController || !isDrawing || viewName !== "Top") return;
             if (cadController.activeTool === "Rectangle") {
                 var curX = mouse.x;

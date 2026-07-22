@@ -60,7 +60,7 @@ add_test(NAME test_main COMMAND test_main)
 
 # Ensure qmltestrunner is found if Qt6::qmltestrunner isn't natively exposed.
 # Qt6 Test is standard but qmltestrunner might just be an executable.
-find_program(QMLTESTRUNNER_EXECUTABLE NAMES qmltestrunner PATHS /usr/lib/qt6/bin /usr/bin)
+find_program(QMLTESTRUNNER_EXECUTABLE NAMES qmltestrunner HINTS /usr/lib/qt6/bin /usr/lib/x86_64-linux-gnu/qt6/bin /usr/lib/qt/bin)
 
 add_test(NAME qml_tests
     COMMAND env QT_QPA_PLATFORM=offscreen ${QMLTESTRUNNER_EXECUTABLE} -import ${CMAKE_SOURCE_DIR}/tests/mock -input ${CMAKE_SOURCE_DIR}/tests/tst_Main.qml
