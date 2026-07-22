@@ -1,7 +1,7 @@
 import QtQuick
 import QtTest
 import "../src" as Src
-import CADmarkable_app
+import CADmarkable_app 1.0
 
 TestCase {
     name: "MainTest"
