@@ -31,9 +31,13 @@ Item {
             eulerRotation.x: -20
         }
 
+        Node {
+            id: originNode
+        }
+
         OrbitCameraController {
             anchors.fill: parent
-            origin: Qt.vector3d(0, 0, 0)
+            origin: originNode
             camera: camera
         }
     }
