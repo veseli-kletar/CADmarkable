@@ -28,12 +28,12 @@ Item {
         OrthographicCamera {
             id: orthoCamera
             // Configure based on viewName
-            z: viewName === "Top" || viewName === "Front" ? 500 : 0
-            x: viewName === "Right" ? 500 : 0
-            y: viewName === "Top" ? 500 : 0
+            z: viewName === "Top" || viewName === "Bottom" || viewName === "Front" || viewName === "Back" ? (viewName === "Back" || viewName === "Bottom" ? -500 : 500) : 0
+            x: viewName === "Right" || viewName === "Left" ? (viewName === "Left" ? -500 : 500) : 0
+            y: viewName === "Top" || viewName === "Bottom" ? (viewName === "Bottom" ? -500 : 500) : 0
 
-            eulerRotation.x: viewName === "Top" ? -90 : 0
-            eulerRotation.y: viewName === "Right" ? 90 : 0
+            eulerRotation.x: viewName === "Top" ? -90 : (viewName === "Bottom" ? 90 : 0)
+            eulerRotation.y: viewName === "Right" ? 90 : (viewName === "Left" ? -90 : (viewName === "Back" ? 180 : 0))
         }
     }
 
@@ -175,6 +175,16 @@ Item {
         onReleased: (mouse) => {
             if (isDrawing) {
                 isDrawing = false;
+            }
+        }
+    }
+
+    // Tap to select sketch entities
+    TapHandler {
+        onTapped: {
+            if (cadController && cadController.activeTool === "Select") {
+                console.log("Component/Sketch selected in 2D view");
+                // Mock selection logic
             }
         }
     }

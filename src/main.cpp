@@ -18,6 +18,6 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.loadFromModule("CADmarkable_app", "Main");
+    engine.load(QUrl(u"qrc:/qt/qml/CADmarkable_app/Main.qml"_qs));
     return app.exec();
 }

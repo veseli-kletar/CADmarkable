@@ -21,32 +21,11 @@ Window {
         statusCoords.text = "X: " + Math.round(x) + "  Y: " + Math.round(y)
     }
 
-    // Keyboard shortcuts for tool switching
-    Shortcut {
-        sequence: "S"
-        onActivated: cadController.activeTool = "Select"
+    function openNumpad(title, initialValue, callback) {
+        numpad.open(title, initialValue, callback);
     }
-    Shortcut {
-        sequence: "R"
-        onActivated: cadController.activeTool = "Rectangle"
-    }
-    Shortcut {
-        sequence: "L"
-        onActivated: cadController.activeTool = "Line"
-    }
-    Shortcut {
-        sequence: "D"
-        onActivated: cadController.activeTool = "Dimension"
-    }
-    Shortcut {
-        sequence: "E"
-        onActivated: {
-            cadController.activeTool = "Extrude"
-            if (cadController.sketchRectWidth > 0 && cadController.sketchRectHeight > 0) {
-                cadController.extrusionDepth = 100
-            }
-        }
-    }
+
+    property string activeView: "Perspective"
 
     // Shared 3D Scene Node
     Node {
@@ -131,95 +110,192 @@ Window {
 
             // Left Sidebar Toolbar
             Rectangle {
-                Layout.preferredWidth: 100
+                Layout.preferredWidth: 180
                 Layout.fillHeight: true
                 color: "#F0F0F0"
                 border.color: "#CCCCCC"
                 border.width: 1
 
-                Column {
-                    anchors.top: parent.top
-                    anchors.topMargin: 20
-                    anchors.horizontalCenter: parent.horizontalCenter
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: 10
                     spacing: 10
 
-                    Text { text: "Sketch"; font.bold: true; font.pixelSize: 12 }
-                    ToolbarButton {
-                        text: "Select"
-                        isActive: cadController.activeTool === "Select"
-                        onClicked: cadController.activeTool = "Select"
-                    }
-                    ToolbarButton {
-                        text: "Rectangle"
-                        isActive: cadController.activeTool === "Rectangle"
-                        onClicked: cadController.activeTool = "Rectangle"
-                    }
-                    ToolbarButton {
-                        text: "Line"
-                        isActive: cadController.activeTool === "Line"
-                        onClicked: cadController.activeTool = "Line"
-                    }
-                    ToolbarButton {
-                        text: "Dimension"
-                        isActive: cadController.activeTool === "Dimension"
-                        onClicked: cadController.activeTool = "Dimension"
-                    }
-                    ToolbarButton { text: "Circle"; isDisabled: true }
-                    ToolbarButton { text: "Arc"; isDisabled: true }
+                    ScrollView {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        clip: true
 
-                    Item { height: 20; width: 1 } // spacer
+                        Column {
+                            width: parent.width
+                            spacing: 10
 
-                    Text { text: "Features"; font.bold: true; font.pixelSize: 12 }
-                    ToolbarButton {
-                        text: "Extrude"
-                        isActive: cadController.activeTool === "Extrude"
-                        onClicked: {
-                            cadController.activeTool = "Extrude"
-                            if (cadController.sketchRectWidth > 0 && cadController.sketchRectHeight > 0) {
-                                cadController.extrusionDepth = 100 // default mock extrusion
+                            Text { text: "Sketch"; font.bold: true; font.pixelSize: 12 }
+                            ToolbarButton {
+                                text: "Select"
+                                isActive: cadController.activeTool === "Select"
+                                onClicked: cadController.activeTool = "Select"
+                            }
+                            ToolbarButton {
+                                text: "Rectangle"
+                                isActive: cadController.activeTool === "Rectangle"
+                                onClicked: cadController.activeTool = "Rectangle"
+                            }
+                            ToolbarButton {
+                                text: "Line"
+                                isActive: cadController.activeTool === "Line"
+                                onClicked: cadController.activeTool = "Line"
+                            }
+                            ToolbarButton {
+                                text: "Dimension"
+                                isActive: cadController.activeTool === "Dimension"
+                                onClicked: cadController.activeTool = "Dimension"
+                            }
+
+                            Item { height: 10; width: 1 } // spacer
+
+                            Text { text: "Features"; font.bold: true; font.pixelSize: 12 }
+                            ToolbarButton {
+                                text: "Extrude"
+                                isActive: cadController.activeTool === "Extrude"
+                                onClicked: {
+                                    cadController.activeTool = "Extrude"
+                                    if (cadController.sketchRectWidth > 0 && cadController.sketchRectHeight > 0) {
+                                        cadController.extrusionDepth = 100 // default mock extrusion
+                                    }
+                                }
+                            }
+
+                            Item { height: 10; width: 1 } // spacer
+
+                            Text { text: "Feature Tree"; font.bold: true; font.pixelSize: 12 }
+
+                            // Mock Feature Tree
+                            Rectangle {
+                                width: parent.width
+                                height: 24
+                                color: "#E0E0E0"
+                                border.color: "#CCCCCC"
+                                Text { anchors.centerIn: parent; text: "Top Plane"; font.pixelSize: 11 }
+                            }
+                            Rectangle {
+                                width: parent.width
+                                height: 24
+                                color: "#E0E0E0"
+                                border.color: "#CCCCCC"
+                                Text { anchors.centerIn: parent; text: "Front Plane"; font.pixelSize: 11 }
+                            }
+                            Rectangle {
+                                width: parent.width
+                                height: 24
+                                color: "#E0E0E0"
+                                border.color: "#CCCCCC"
+                                Text { anchors.centerIn: parent; text: "Right Plane"; font.pixelSize: 11 }
+                            }
+
+                            Rectangle {
+                                width: parent.width
+                                height: 24
+                                color: cadController.sketchRectWidth > 0 ? "#DDEEFF" : "transparent"
+                                border.color: "#CCCCCC"
+                                visible: cadController.sketchRectWidth > 0 || cadController.sketchLineStartX !== cadController.sketchLineEndX
+                                Text { anchors.centerIn: parent; text: "Sketch 1"; font.pixelSize: 11 }
+                            }
+
+                            Rectangle {
+                                width: parent.width
+                                height: 24
+                                color: cadController.extrusionDepth > 0 ? "#DDEEFF" : "transparent"
+                                border.color: "#CCCCCC"
+                                visible: cadController.extrusionDepth > 0
+                                Text { anchors.centerIn: parent; text: "Extrude 1"; font.pixelSize: 11 }
                             }
                         }
                     }
-                    ToolbarButton { text: "Revolve"; isDisabled: true }
-                    ToolbarButton { text: "Sweep"; isDisabled: true }
                 }
             }
 
-            // 4-Panel Grid
-            GridLayout {
+            // Single Active Viewport
+            Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                columns: 2
-                rows: 2
-                columnSpacing: 2
-                rowSpacing: 2
+
+                // Overlay ViewCube
+                ViewCube {
+                    id: viewCube
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 10
+                    z: 100 // ensure it floats above views
+                    currentView: activeView
+                    onViewSelected: function(viewName) {
+                        activeView = viewName;
+                    }
+                }
 
                 PerspectiveView {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    anchors.fill: parent
+                    visible: activeView === "Perspective"
                     cadController: cadController
                     importScene: sharedScene
                 }
                 OrthographicView {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    anchors.fill: parent
+                    visible: activeView === "Top"
                     viewName: "Top"
                     cadController: cadController
                     importScene: sharedScene
                 }
                 OrthographicView {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    anchors.fill: parent
+                    visible: activeView === "Front"
                     viewName: "Front"
                     cadController: cadController
                     importScene: sharedScene
                 }
                 OrthographicView {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    anchors.fill: parent
+                    visible: activeView === "Right"
                     viewName: "Right"
                     cadController: cadController
                     importScene: sharedScene
+                }
+                OrthographicView {
+                    anchors.fill: parent
+                    visible: activeView === "Bottom"
+                    viewName: "Bottom"
+                    cadController: cadController
+                    importScene: sharedScene
+                }
+                OrthographicView {
+                    anchors.fill: parent
+                    visible: activeView === "Back"
+                    viewName: "Back"
+                    cadController: cadController
+                    importScene: sharedScene
+                }
+                OrthographicView {
+                    anchors.fill: parent
+                    visible: activeView === "Left"
+                    viewName: "Left"
+                    cadController: cadController
+                    importScene: sharedScene
+                }
+
+                // Floating Snackbar Context Menu
+                Snackbar {
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 20
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    cadController: cadController
+                    z: 90
+                }
+
+                // Floating Numpad
+                Numpad {
+                    id: numpad
+                    anchors.centerIn: parent
+                    z: 200
                 }
             }
         }

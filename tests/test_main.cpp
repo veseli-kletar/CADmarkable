@@ -13,15 +13,26 @@ private slots:
     void testMainAppLoading()
     {
         QQmlApplicationEngine engine;
+        // Use standard environment variables or library paths, do not hardcode absolute paths
+        engine.addImportPath(qEnvironmentVariable("QML2_IMPORT_PATH"));
         engine.addImportPath(QLibraryInfo::path(QLibraryInfo::QmlImportsPath));
         engine.addImportPath("qrc:/");
 
         // 2. Verify Component Loading
-        QQmlComponent component(&engine);
-        component.loadFromModule("CADmarkable_app", "Main");
+        QQmlComponent component(&engine, QUrl(u"qrc:/CADmarkable_app/src/Main.qml"_qs));
 
         if (component.isError()) {
             qDebug() << component.errorString();
+        }
+
+        if (component.isError()) {
+            QQmlComponent fallback(&engine, QUrl(u"qrc:/qt/qml/CADmarkable_app/Main.qml"_qs));
+            if (!fallback.isError()) {
+                // If fallback worked, use it. (The resource path depends on qt version/build config)
+                component.loadUrl(QUrl(u"qrc:/qt/qml/CADmarkable_app/Main.qml"_qs));
+            } else {
+                qDebug() << "Fallback also failed:" << fallback.errorString();
+            }
         }
         QVERIFY2(!component.isError(), "Component has errors while loading main QML file");
 

@@ -21,7 +21,11 @@ qt_add_qml_module(CADmarkable
         src/Main.qml
         src/OrthographicView.qml
         src/PerspectiveView.qml
-        src/ToolbarButton.qml)
+        src/ToolbarButton.qml
+        src/ViewCube.qml
+        src/ViewCubeFace.qml
+        src/Snackbar.qml
+        src/Numpad.qml)
 
 target_link_libraries(CADmarkable PRIVATE
     Qt6::Quick
@@ -47,7 +51,11 @@ qt_add_qml_module(test_main
         src/Main.qml
         src/OrthographicView.qml
         src/PerspectiveView.qml
-        src/ToolbarButton.qml)
+        src/ToolbarButton.qml
+        src/ViewCube.qml
+        src/ViewCubeFace.qml
+        src/Snackbar.qml
+        src/Numpad.qml)
 
 target_link_libraries(test_main PRIVATE
     Qt6::Quick
@@ -64,6 +72,21 @@ find_program(QMLTESTRUNNER_EXECUTABLE NAMES qmltestrunner HINTS /usr/lib/qt6/bin
 
 add_test(NAME qml_tests
     COMMAND env QT_QPA_PLATFORM=offscreen ${QMLTESTRUNNER_EXECUTABLE} -import ${CMAKE_SOURCE_DIR}/tests/mock -input ${CMAKE_SOURCE_DIR}/tests/tst_Main.qml
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+add_test(NAME qml_tests_viewcube
+    COMMAND env QT_QPA_PLATFORM=offscreen ${QMLTESTRUNNER_EXECUTABLE} -input ${CMAKE_SOURCE_DIR}/tests/tst_ViewCube.qml
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+add_test(NAME qml_tests_snackbar
+    COMMAND env QT_QPA_PLATFORM=offscreen ${QMLTESTRUNNER_EXECUTABLE} -import ${CMAKE_SOURCE_DIR}/tests/mock -input ${CMAKE_SOURCE_DIR}/tests/tst_Snackbar.qml
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+add_test(NAME qml_tests_numpad
+    COMMAND env QT_QPA_PLATFORM=offscreen ${QMLTESTRUNNER_EXECUTABLE} -input ${CMAKE_SOURCE_DIR}/tests/tst_Numpad.qml
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
